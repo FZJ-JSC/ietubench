@@ -1,0 +1,61 @@
+{% extends "../kernel.j2" %}
+
+{% block PROLOGUE %}
+{{ super() }}
+{% endblock %}
+
+{% block KERNEL_INIT_DATA %}
+  
+  mov   x8, x0
+  mov   x9, #0
+  ldr   x1, [x8, #data_t_nloop]
+  ldr  x10, [x8, #data_t_curr_buf]
+  ldr  x11, [x8, #data_t_curr_val]
+  mov  x20, #0
+  mov  x21, #1
+
+
+{% if bytes == 8 %}
+{% set load_bytes="ldr   x9, [x10], 8" %}
+{% else if bytes == 4 %}
+{% set load_bytes="ldr   w9, [x10], 4" %}
+{% else if bytes == 2 %}
+{% set load_bytes="ldr   w9, [x10], 2" %}
+{% else %}
+{% set load_bytes="ldrb  w9, [x10], 1" %}
+{% endif %}
+
+{% endblock %}
+
+{% block KERNEL_BODY %}
+
+{{ name }}_loop:
+
+{% for b in range(span) %}
+  {{load_bytes}}
+  cmp   x9,  x11
+  bcc   .TARGET_{{loop.index}}
+.BACK_FROM_TARGET_{{loop.index}}:
+{% endfor %}
+
+  sub x1, x1, #1
+  cbnz x1, {{ name }}_loop
+
+{% endblock %}
+
+{% block KERNEL_FINISH %}
+{{ super() }}
+{% endblock %}
+
+{% block KERNEL_END %}
+{% for b in range(span) %}
+.TARGET_{{loop.index}}:
+  add   x20, x21, {{loop.index}}
+  b     .BACK_FROM_TARGET_{{loop.index}}
+{% endfor %}
+
+{% endblock %}
+
+{% block EPILOGUE %}
+{{ super() }}
+{% endblock %}

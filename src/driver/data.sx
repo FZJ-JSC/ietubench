@@ -1,0 +1,24 @@
+#ifndef __ASSEMBLER__
+#ifndef DATA_SX
+#define DATA_SX
+struct data_t {
+    uint64_t time;
+    uint64_t nloop;
+    uint64_t threadId;
+    uint64_t curr_val;
+    uint64_t *curr_buf;
+    uint64_t *next_buf;
+    uint64_t *main_buf;
+    uint64_t *mail_box;
+};
+#endif // DATA_SX
+#else
+.equ data_t_time,      0
+.equ data_t_nloop,     8
+.equ data_t_threadId, 16
+.equ data_t_curr_val, 24
+.equ data_t_curr_buf, 32
+.equ data_t_next_buf, 40
+.equ data_t_main_buf, 48
+.equ data_t_mail_box, 56
+#endif

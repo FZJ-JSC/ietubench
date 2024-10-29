@@ -1,0 +1,22 @@
+{
+    "template": "sve.j2",
+    "kernels": [
+      { "name": "fmla_a", "spec": { "inst": ["fmla.zm.d"], "regs": { "z": [0, 8] }, "srcs": {"z": [8, 9] } } },
+      { "name": "fmla_b", "spec": { "inst": ["fmla.zm.d"], "regs": { "z": [0, 8] } } },
+      { "name": "fmul_a", "spec": { "inst": ["fmul.zm.d"], "regs": { "z": [0, 8] }, "srcs": {"z": [-1,8] } } },
+      { "name": "fmul_b", "spec": { "inst": ["fmul.zm.d"], "regs": { "z": [0, 8] } } },
+      { "name": "add_fmla_a", "spec": { "inst": ["add.x", "fmla.zm.d"], "regs": { "x": [4, 20], "z": [0, 8] }, "srcs": { "x": [20, 21], "z": [8, 9] } } },
+      { "name": "add_fmla_b", "spec": { "inst": ["add.x", "fmla.zm.d"], "regs": { "x": [4, 20], "z": [0, 8] } } },
+      { "name": "add_fmul_a", "spec": { "inst": ["add.x", "fmul.zm.d"], "regs": { "x": [4, 20], "z": [0, 8] }, "srcs": { "x": [20, 21], "z": [-1, 8] } } },
+      { "name": "add_fmul_b", "spec": { "inst": ["add.x", "fmul.zm.d"], "regs": { "x": [4, 20], "z": [0, 8] } } },
+      { "name": "fadd64_fmla_a", "spec": { "inst": ["fadd.d", "fmla.zm.d"], "regs": { "d": [16, 24], "z": [0, 8] }, "srcs": { "d": [24, 25], "z": [8, 9] } } },
+      { "name": "fadd64_fmla_b", "spec": { "inst": ["fadd.d", "fmla.zm.d"], "regs": { "d": [16, 24], "z": [0, 8] } } },
+      { "name": "fadd64_fmul_a", "spec": { "inst": ["fadd.d", "fmul.zm.d"], "regs": { "d": [16, 24], "z": [0, 8] }, "srcs": { "d": [24, 25], "z": [-1, 8] } } },
+      { "name": "fadd64_fmul_b", "spec": { "inst": ["fadd.d", "fmul.zm.d"], "regs": { "d": [16, 24], "z": [0, 8] } } },
+      { "name": "add_fadd64_add_fmla_a", "spec": { "inst": ["add.x", "fadd.d", "add.x", "fmla.zm.d"], "regs": { "x": [4, 20],  "d": [16, 24], "z": [0, 8] }, "srcs": { "x": [20, 21], "d": [24, 25], "z": [8, 9] } } },
+      { "name": "add_fadd64_add_fmla_b", "spec": { "inst": ["add.x", "fadd.d", "add.x", "fmla.zm.d"], "regs": { "x": [4, 20],  "d": [16, 24], "z": [0, 8] } } },
+      { "name": "add_fadd64_add_fmul_a", "spec": { "inst": ["add.x", "fadd.d", "add.x", "fmul.zm.d"], "regs": { "x": [4, 20],  "d": [16, 24], "z": [0, 8] }, "srcs": { "x": [20, 21], "d": [24, 25], "z": [-1, 8] } } },
+      { "name": "add_fadd64_add_fmul_b", "spec": { "inst": ["add.x", "fadd.d", "add.x", "fmul.zm.d"], "regs": { "x": [4, 20],  "d": [16, 24], "z": [0, 8] } } }
+    ]
+  }
+  
