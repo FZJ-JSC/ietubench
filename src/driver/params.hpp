@@ -100,7 +100,8 @@ struct Params {
 std::ostream&
 operator<<(std::ostream& os, const Params& p)
 {
-  return os << std::format(" nthreads={} nreps={} nloop={}", p.nthreads, p.nreps, p.nloop);
+  os << std::format(" nthreads={} nreps={} nloop={}", p.nthreads, p.nreps, p.nloop);
+  return os;
 }
 } // namespace ietubench
 

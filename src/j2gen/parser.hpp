@@ -22,7 +22,7 @@ class Jinja2 {
       return *this;
     }
     bool operator!=(const iterator& b) const { return idx != b.idx; }
-    std::tuple<std::string, std::string, unsigned int> operator*() { return f->get_k(idx); }
+    std::tuple<std::string, std::string> operator*() { return f->get_k(idx); }
 
   private:
     unsigned int idx;
@@ -51,6 +51,12 @@ public:
     return *this;
   }
 
+  Jinja2& set_parallelism(const unsigned int& para)
+  {
+    _para = para;
+    return *this;
+  }
+
   template<class O>
   Jinja2& add_callback(const std::string& name, const std::function<std::string(const unsigned int&, const O&)>& f)
   {
@@ -63,13 +69,15 @@ public:
   iterator end() const { return iterator(this, _size); }
 
 private:
-  const std::tuple<std::string, std::string, unsigned int> get_k(const unsigned int& k) const
+  const std::tuple<std::string, std::string> get_k(const unsigned int& k) const
   {
     if (_size == 0)
       return {};
     auto data = config["kernels"][k];
     auto span = data.value("span", _span);
+    auto para = data.value("para", _para);
     data["span"] = span;
+    data["para"] = para;
 
     std::string tmpl_path;
     if (config.contains("template"))
@@ -77,7 +85,7 @@ private:
     else
       tmpl_path = config_path.parent_path() / data["template"];
 
-    return { data["name"], env.render_file(tmpl_path, data), span };
+    return { data["name"], env.render_file(tmpl_path, data) };
   }
 
   mutable inja::Environment env;
@@ -85,6 +93,7 @@ private:
   inja::json config;
   unsigned int _size;
   unsigned int _span;
+  unsigned int _para;
 };
 
 } // namespace j2gen::parser

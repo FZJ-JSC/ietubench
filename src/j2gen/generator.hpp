@@ -32,14 +32,14 @@ struct cyclic_counter {
 
 const std::vector<Generator<KernelSpec>> iet_bench{
   { "iet_bench",
-    [](const unsigned int& loopl, const auto& s) {
+    [](const unsigned int& loop_len, const auto& s) {
       std::string loop_text;
       std::map<std::string, cyclic_counter> rg_counter;
       for (const auto& [rg_t, regs] : s.regs) {
         rg_counter.emplace(rg_t, cyclic_counter{ regs[0], regs[1], regs[0] });
       }
 
-      const auto l_len = loopl;
+      const auto l_len = loop_len;
       const auto i_len = s.ops.size();
       for (unsigned int l = 0; l < l_len; l += i_len) {
         for (auto const& op : s.ops) {

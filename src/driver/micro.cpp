@@ -17,8 +17,10 @@ main(int argc, char* argv[])
 {
   params::Params p(argc, argv);
 
-  if (!p.ocsv)
-    std::cout << "kernel=" << TO_STR(KERNEL) << p << " loopl=" << ietubench::driver::loopl << std::endl;
+  if (!p.ocsv) {
+    std::cout << std::format("kernel={} k_loop={} k_para={}", TO_STR(KERNEL), driver::k_loop_len, driver::k_parallel);
+    std::cout << p << std::endl;
+  }
 
   driver::KERNEL_DRIVER drv;
 

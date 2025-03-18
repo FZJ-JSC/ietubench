@@ -1,4 +1,9 @@
-function(CONFIGURE_KERNELS DRIVER_NAME KERNEL_FLAGS)
+# Define kernel build configuration
+function(CONFIGURE_KERNEL)
+    set(single_args DRIVER FLAGS)
+    set(multi_args LOOP_LENGTHS PARALLELISM)
+    cmake_parse_arguments(CONFIGURE_KERNEL "" "${single_args}" "${multi_args}" ${ARGN})
+
     set(DRIVER_SRCS
             ${CMAKE_SOURCE_DIR}/src/driver/micro.cpp
             ${CMAKE_SOURCE_DIR}/src/driver/cpu_freq.cpp
@@ -13,36 +18,47 @@ function(CONFIGURE_KERNELS DRIVER_NAME KERNEL_FLAGS)
         list(APPEND KERNEL_NAMES ${KERNEL_NAME})
     endforeach()
 
-    foreach(L IN LISTS PROJECT_LOOP_LENGTHS)
+    if(NOT DEFINED CONFIGURE_KERNEL_PARALLELISM)
+        set(CONFIGURE_KERNEL_PARALLELISM "0")
+    endif()
+
+    foreach(P IN LISTS CONFIGURE_KERNEL_PARALLELISM)
+    foreach(L IN LISTS CONFIGURE_KERNEL_LOOP_LENGTHS)
+        if ("${P}" STREQUAL "0")
+            set(K_SUFFIX "${L}")
+        else()
+            set(K_SUFFIX "${L}_${P}")
+        endif()
         set(KERNEL_SRCS)
         foreach(K IN LISTS KERNEL_NAMES)
-            list(APPEND KERNEL_SRCS "${K}_${L}.sx")
+            list(APPEND KERNEL_SRCS "${K}_${K_SUFFIX}.sx")
         endforeach()
         add_custom_command(
             OUTPUT ${KERNEL_SRCS}
             DEPENDS j2gen
-            COMMAND j2gen -l ${L} -c ${KERNEL_LIST} -o ${CMAKE_CURRENT_BINARY_DIR}
+            COMMAND j2gen -l ${L} -p ${P} -s _${K_SUFFIX}.sx -c ${KERNEL_LIST} -o ${CMAKE_CURRENT_BINARY_DIR}
         )
         foreach(K IN LISTS KERNEL_NAMES)
-            add_executable(${K}_${L}.x ${K}_${L}.sx ${DRIVER_SRCS} )
-            target_include_directories(${K}_${L}.x PRIVATE ${CMAKE_SOURCE_DIR}/src/driver)
-            target_compile_definitions(${K}_${L}.x PRIVATE "KERNEL=${K}" "KERNEL_LOOPL=${L}" "KERNEL_DRIVER=Driver${DRIVER_NAME}")
-            target_compile_options(${K}_${L}.x  PRIVATE  $<$<COMPILE_LANGUAGE:ASM>: ${KERNEL_FLAGS} ${ASM_FLAGS}> )
-            target_link_libraries( ${K}_${L}.x  PRIVATE Threads::Threads)
-            set_property(SOURCE ${K}_${L}.sx  PROPERTY LANGUAGE ASM)
+            add_executable(${K}_${K_SUFFIX}.x ${K}_${K_SUFFIX}.sx ${DRIVER_SRCS} )
+            target_include_directories(${K}_${K_SUFFIX}.x PRIVATE ${CMAKE_SOURCE_DIR}/src/driver)
+            target_compile_definitions(${K}_${K_SUFFIX}.x PRIVATE "KERNEL=${K}" "KERNEL_LOOP_LEN=${L}" "KERNEL_PARALLEL=${P}" "KERNEL_DRIVER=Driver${CONFIGURE_KERNEL_DRIVER}")
+            target_compile_options(${K}_${K_SUFFIX}.x  PRIVATE  $<$<COMPILE_LANGUAGE:ASM>: ${CONFIGURE_KERNEL_FLAGS} ${ASM_FLAGS}> )
+            target_link_libraries( ${K}_${K_SUFFIX}.x  PRIVATE Threads::Threads)
+            set_property(SOURCE ${K}_${K_SUFFIX}.sx  PROPERTY LANGUAGE ASM)
 
             if(PROJECT_USE_M5)
-                set_target_properties(${K}_${L}.x PROPERTIES OUTPUT_NAME "${K}_${L}-m5.x")
-                target_link_libraries(${K}_${L}.x PRIVATE m5)
-                target_compile_definitions(${K}_${L}.x PRIVATE USEM5OPS)
+                set_target_properties(${K}_${K_SUFFIX}.x PROPERTIES OUTPUT_NAME "${K}_${K_SUFFIX}-m5.x")
+                target_link_libraries(${K}_${K_SUFFIX}.x PRIVATE m5)
+                target_compile_definitions(${K}_${K_SUFFIX}.x PRIVATE USEM5OPS)
             endif()
 
             if(PROJECT_USE_LIKWID)
-                set_target_properties(${K}_${L}.x PROPERTIES OUTPUT_NAME "${K}_${L}-lk.x")
-                target_link_libraries(${K}_${L}.x PRIVATE likwid)
-                target_compile_definitions(${K}_${L}.x PRIVATE LIKWID_PERFMON)
+                set_target_properties(${K}_${K_SUFFIX}.x PROPERTIES OUTPUT_NAME "${K}_${K_SUFFIX}-lk.x")
+                target_link_libraries(${K}_${K_SUFFIX}.x PRIVATE likwid)
+                target_compile_definitions(${K}_${K_SUFFIX}.x PRIVATE LIKWID_PERFMON)
             endif()
         endforeach()
+    endforeach()
     endforeach()
 endfunction()
 

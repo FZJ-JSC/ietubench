@@ -11,7 +11,10 @@ main(int argc, char** argv)
   parser::Jinja2 parser;
 
   if (!params.conf_file.empty())
-    parser.set_config(params.conf_file).set_loop_span(params.loopl);
+    parser
+      .set_config(params.conf_file)
+      .set_loop_span(params.k_loop_len)
+      .set_parallelism(params.k_parallel);
   else
     return 0;
 
@@ -19,8 +22,8 @@ main(int argc, char** argv)
     parser.add_callback(g.name, g.f);
   }
 
-  for (const auto& [name, text, span] : parser) {
-    std::string output_file = params.output_dir / std::format("{}_{}.{}", name, span, params.ext);
+  for (const auto& [name, text] : parser) {
+    std::string output_file = params.output_dir / std::format("{}{}", name, params.output_suffix);
     if (params.verbose > 0)
       std::cout << "  generating " << output_file << std::endl;
     std::ofstream ofs(output_file, std::ofstream::out);

@@ -14,8 +14,12 @@
 #include <likwid-marker.h>
 #endif
 
-#ifndef KERNEL_LOOPL
-#define KERNEL_LOOPL 32
+#ifndef KERNEL_LOOP_LEN
+#define KERNEL_LOOP_LEN 1
+#endif
+
+#ifndef KERNEL_PARALLEL
+#define KERNEL_PARALLEL 0
 #endif
 
 extern "C"
@@ -25,7 +29,8 @@ extern "C"
 
 namespace ietubench::driver {
 
-constexpr int loopl = KERNEL_LOOPL;
+constexpr unsigned int k_loop_len = KERNEL_LOOP_LEN;
+constexpr unsigned int k_parallel = KERNEL_PARALLEL;
 
 template<typename D>
 class Driver {
@@ -52,7 +57,8 @@ public:
     nthreads = p.nthreads;
     nreps = p.nreps;
     nloop = p.nloop;
-    iter = nloop * loopl;
+    prlsm = k_parallel;
+    iter = nloop * k_loop_len;
 
     set_affinity(p.threads[0]);
 
@@ -84,6 +90,7 @@ public:
   uint64_t nreps;
   uint64_t nloop;
   uint64_t iter;
+  unsigned int prlsm;
   std::unique_ptr<uint64_t[]> time;
 };
 }
