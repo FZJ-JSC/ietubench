@@ -21,6 +21,7 @@ find_package(Threads REQUIRED)
 set(PROJECT_USER_LIB_PATH "/usr" CACHE STRING "User libraries path")
 
 set(PROJECT_LOOP_LENGTHS 16 64 256 1024 4096 CACHE STRING "Microbenchmark Loop Lengths")
+set(PROJECT_K_PARALLELISM 1 2 4 8 CACHE STRING "Microbenchmark Parallelism")
 
 option(PROJECT_USE_M5 "Enable m5 instrumentation" OFF)
 option(PROJECT_USE_LIKWID "Enable likwid instrumentation" OFF)

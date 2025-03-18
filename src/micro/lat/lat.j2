@@ -1,0 +1,47 @@
+{% extends "../kernel.j2" %}
+
+{% block PROLOGUE %}
+{{ super() }}
+{% endblock %}
+
+{% block KERNEL_INIT_DATA %}
+  
+  mov   x8, x0
+  mov   x9, #0
+  ldr   x1, [x8, #data_t_nloop]
+  ldr  x10, [x8, #data_t_curr_buf]
+
+  {% for p in range(para) %}
+  ldr x{{ 11 + p }}, [x10, #{{ 8*p }}]
+  {% endfor %}
+
+{% endblock %}
+
+{% block KERNEL_BODY %}
+
+{% set span_para=round( span / para , 0) %}
+
+{{ name }}_loop:
+
+{% for l in range(span_para) %}
+  {% for p in range(para) %}
+    ldr x{{ 11 + p }}, [x{{ 11 + p }}]
+  {% endfor %}
+{% endfor %}
+
+  sub x1, x1, #1
+  cbnz x1, {{ name }}_loop
+
+{% endblock %}
+
+{% block KERNEL_FINISH %}
+{{ super() }}
+{% endblock %}
+
+{% block KERNEL_END %}
+{{ super() }}
+{% endblock %}
+
+{% block EPILOGUE %}
+{{ super() }}
+{% endblock %}

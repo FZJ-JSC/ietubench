@@ -1,0 +1,5 @@
+{
+  "kernels": [
+    { "name": "lat_a", "template": "lat.j2" }
+  ]
+}
