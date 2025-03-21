@@ -1,3 +1,9 @@
+set(PROJECT_TARGET_ARCH "arm64" CACHE STRING "Compile microbenchmarks for target architecture")
+set_property(CACHE PROJECT_TARGET_ARCH PROPERTY STRINGS arm64)
+
+set(PROJECT_LOOP_LENGTHS 16 64 256 1024 4096 CACHE STRING "Microbenchmark Loop Lengths")
+set(PROJECT_K_PARALLELISM 1 2 4 8 CACHE STRING "Microbenchmark Parallelism")
+
 # Define kernel build configuration
 function(CONFIGURE_KERNEL)
     set(single_args DRIVER FLAGS)
@@ -36,7 +42,7 @@ function(CONFIGURE_KERNEL)
         add_custom_command(
             OUTPUT ${KERNEL_SRCS}
             DEPENDS j2gen
-            COMMAND j2gen -l ${L} -p ${P} -s _${K_SUFFIX}.sx -c ${KERNEL_LIST} -o ${CMAKE_CURRENT_BINARY_DIR}
+            COMMAND j2gen -g ${PROJECT_TARGET_ARCH} -l ${L} -p ${P} -s _${K_SUFFIX}.sx -c ${KERNEL_LIST} -o ${CMAKE_CURRENT_BINARY_DIR}
         )
         foreach(K IN LISTS KERNEL_NAMES)
             add_executable(${K}_${K_SUFFIX}.x ${K}_${K_SUFFIX}.sx ${DRIVER_SRCS} )
@@ -62,8 +68,6 @@ function(CONFIGURE_KERNEL)
     endforeach()
 endfunction()
 
-add_subdirectory(bp)
-add_subdirectory(c2c)
-add_subdirectory(iet)
-add_subdirectory(sve)
-add_subdirectory(lat)
+if ("${PROJECT_TARGET_ARCH}" STREQUAL "arm64")
+    add_subdirectory(arm64)
+endif()

@@ -10,18 +10,23 @@ struct Params {
 public:
   std::filesystem::path output_dir;
   std::filesystem::path conf_file;
+  std::string group;
   std::string output_suffix;
   unsigned int k_loop_len;
   unsigned int k_parallel;
   unsigned int verbose;
 
-  Params(int argc, char* argv[]) : output_suffix{ ".sx" }, k_loop_len{ 16 }, k_parallel{ 0 }, verbose{ 0 }
+  Params(int argc, char* argv[])
+    : group{ "arm64" }, output_suffix{ ".sx" }, k_loop_len{ 16 }, k_parallel{ 0 }, verbose{ 0 }
   {
     int c = 0;
-    while ((c = getopt(argc, argv, "hc:l:o:p:s:v:")) != -1) {
+    while ((c = getopt(argc, argv, "hc:g:l:o:p:s:v:")) != -1) {
       switch (c) {
         case 'c':
           conf_file = std::string(optarg);
+          break;
+        case 'g':
+          group = std::string(optarg);
           break;
         case 'l':
           k_loop_len = atoi(optarg);

@@ -11,6 +11,8 @@
 
 namespace j2gen::parser {
 using json_type = inja::json;
+using args_type = inja::Arguments;
+using ctxt_type = inja::Environment;
 
 class Jinja2 {
   class iterator {
@@ -30,10 +32,10 @@ class Jinja2 {
   };
 
 public:
-  Jinja2() : env{}, config{}, config_path{}, _size{ 0 }, _span{ 16 }
+  Jinja2() : ctxt{}, config{}, config_path{}, _size{ 0 }, _span{ 16 }
   {
-    env.set_trim_blocks(true);
-    env.set_lstrip_blocks(true);
+    ctxt.set_trim_blocks(true);
+    ctxt.set_lstrip_blocks(true);
   };
 
   Jinja2& set_config(const std::filesystem::path& path)
@@ -60,8 +62,7 @@ public:
   template<class O>
   Jinja2& add_callback(const std::string& name, const std::function<std::string(const unsigned int&, const O&)>& f)
   {
-    env.add_callback(
-      name, 2, [f](inja::Arguments& args) { return f(args[0]->get<unsigned int>(), args[1]->get<O>()); });
+    ctxt.add_callback(name, 2, [f](args_type& args) { return f(args[0]->get<unsigned int>(), args[1]->get<O>()); });
     return *this;
   }
 
@@ -85,12 +86,12 @@ private:
     else
       tmpl_path = config_path.parent_path() / data["template"];
 
-    return { data["name"], env.render_file(tmpl_path, data) };
+    return { data["name"], ctxt.render_file(tmpl_path, data) };
   }
 
-  mutable inja::Environment env;
+  mutable ctxt_type ctxt;
   std::filesystem::path config_path;
-  inja::json config;
+  json_type config;
   unsigned int _size;
   unsigned int _span;
   unsigned int _para;

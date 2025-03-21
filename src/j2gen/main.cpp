@@ -1,4 +1,4 @@
-#include "generator.hpp"
+#include "callback.hpp"
 #include "params.hpp"
 #include "parser.hpp"
 
@@ -18,9 +18,7 @@ main(int argc, char** argv)
   else
     return 0;
 
-  for (const auto& g : generator::iet_bench) {
-    parser.add_callback(g.name, g.f);
-  }
+  callback::Registry::add_callbacks(params.group, parser);
 
   for (const auto& [name, text] : parser) {
     std::string output_file = params.output_dir / std::format("{}{}", name, params.output_suffix);
