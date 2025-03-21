@@ -13,11 +13,10 @@ template<typename T>
 struct random_range {
   T min;
   T max;
-  std::random_device rd;
-  std::mt19937 gen;
+  std::minstd_rand gen;
   std::uniform_int_distribution<T> dist;
   random_range(T min = 0, T max = std::numeric_limits<T>::max())
-    : min{ min }, max{ max }, rd{}, gen{ rd() }, dist{ min, max }
+    : min{ min }, max{ max }, gen{}, dist{ min, max }
   {
   }
 
