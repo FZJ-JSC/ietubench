@@ -3,7 +3,7 @@
   "kernels": [
     { "name": "adc_a", "spec": { "inst": ["adc"], "regs": [4, 20], "srcs": [20, 21] } },
     { "name": "adcs_a", "spec": { "inst": ["adcs"], "regs": [4, 20], "srcs": [20, 21] } },
-    { "name": "add_a", "spec": { "inst": ["add"], "regs": [4, 20], "srcs": [20, 21] } },
+    { "name": "add_a", "spec": { "inst": ["add"], "regs": [4, 28], "srcs": [28, 29] } },
     { "name": "adds_a", "spec": { "inst": ["adds"], "regs": [4, 20], "srcs": [20, 21] } },
     { "name": "madd_a", "spec": { "inst": ["madd_3"], "regs": [4, 20], "srcs": [20, 21] } },
     { "name": "mul_a", "spec": { "inst": ["mul"], "regs": [4, 20], "srcs": [20, 21] } },
@@ -23,7 +23,7 @@
     { "name": "mul_adcs_umulh_adcs_a", "spec": { "inst": ["mul", "adcs", "umulh", "adcs"], "regs": [4, 20], "srcs": [20, 21] } },
     { "name": "adc_b", "spec": { "inst": ["adc"], "regs": [4, 20] } },
     { "name": "adcs_b", "spec": { "inst": ["adcs"], "regs": [4, 20] } },
-    { "name": "add_b", "spec": { "inst": ["add"], "regs": [4, 20] } },
+    { "name": "add_b", "spec": { "inst": ["add"], "regs": [4, 28] } },
     { "name": "adds_b", "spec": { "inst": ["adds"], "regs": [4, 20] } },
     { "name": "madd_b", "spec": { "inst": ["madd_3"], "regs": [4, 20] } },
     { "name": "mul_b", "spec": { "inst": ["mul"], "regs": [4, 20] } },
@@ -45,7 +45,9 @@
     { "name": "fadd64_b", "spec": { "inst": ["fadd.d"], "regs": [0, 16] } },
     { "name": "fadd32_a", "spec": { "inst": ["fadd.s"], "regs": [0, 16], "srcs": { "d": [30, 31] } } },
     { "name": "fadd32_b", "spec": { "inst": ["fadd.s"], "regs": [0, 16] } },
-    { "name": "add_fadd64_a", "spec": { "inst": ["add.x", "fadd.d"], "regs": { "x": [8, 16], "d": [0, 8] }, "srcs": { "x": [16, 17], "d": [30, 31] } } },
-    { "name": "add_fadd64_b", "spec": { "inst": ["add.x", "fadd.d"], "regs": { "x": [8, 16], "d": [0, 8] } } }
+    { "name": "add_fadd64_a", "spec": { "inst": ["add.x", "fadd.d"], "regs": { "x": [8, 24], "d": [0, 16] }, "srcs": { "x": [24, 25], "d": [30, 31] } } },
+    { "name": "add_fadd64_b", "spec": { "inst": ["add.x", "fadd.d"], "regs": { "x": [8, 24], "d": [0, 16] } } },
+    { "name": "mul_fadd64_a", "spec": { "inst": ["mul.x", "fadd.d"], "regs": { "x": [8, 24], "d": [0, 16] }, "srcs": { "x": [24, 25], "d": [30, 31] } } },
+    { "name": "mul_fadd64_b", "spec": { "inst": ["mul.x", "fadd.d"], "regs": { "x": [8, 24], "d": [0, 16] } } }
   ]
 }

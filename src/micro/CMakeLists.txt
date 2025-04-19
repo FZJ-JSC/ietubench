@@ -1,7 +1,7 @@
 set(PROJECT_TARGET_ARCH "arm64" CACHE STRING "Compile microbenchmarks for target architecture")
 set_property(CACHE PROJECT_TARGET_ARCH PROPERTY STRINGS arm64)
 
-set(PROJECT_LOOP_LENGTHS 16 64 256 1024 4096 CACHE STRING "Microbenchmark Loop Lengths")
+set(PROJECT_LOOP_LENGTHS 64 256 1024 4096 CACHE STRING "Microbenchmark Loop Lengths")
 set(PROJECT_K_PARALLELISM 1 2 4 8 CACHE STRING "Microbenchmark Parallelism")
 
 # Define kernel build configuration
